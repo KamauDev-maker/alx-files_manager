@@ -42,6 +42,16 @@ class DBClient {
       throw error;
     }
   }
+
+  async getUserByEmail(email) {
+    const usersCollection = this.client.db().collection('users');
+    return usersCollection.findOne({ email });
+  }
+
+  async insertUser(user) {
+    const usersCollection = this.client.db().collection('users');
+    return usersCollection.insertOne(user);
+  }
 }
 
 const dbClient = new DBClient();
