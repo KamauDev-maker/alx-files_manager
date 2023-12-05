@@ -1,8 +1,9 @@
-import sha1 from 'sha1';
-
+/* eslint-disable import/no-extraneous-dependencies */
+const { SHA1 } = require('crypto-js');
 const dbClient = require('../utils/db');
 
 class UsersController {
+  // eslint-disable-next-line consistent-return
   static async postNew(req, res) {
     try {
       const { email, password } = req.body;
@@ -19,7 +20,7 @@ class UsersController {
         return res.status(400).json({ error: 'Already exist' });
       }
 
-      const hashedPassword = sha1(password).toString();
+      const hashedPassword = SHA1(password).toString();
 
       const newUser = {
         email,
