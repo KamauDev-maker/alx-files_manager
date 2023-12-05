@@ -42,6 +42,27 @@ class DBClient {
       throw error;
     }
   }
+
+  async getUserByEmail(email) {
+    const usersCollection = this.client.db().collection('users');
+    return usersCollection.findOne({ email });
+  }
+
+  async insertUser(user) {
+    const usersCollection = this.client.db().collection('users');
+    return usersCollection.insertOne(user);
+  }
+
+  async getFileById(fileId) {
+    const filesCollection = this.client.db().collection('files');
+    return filesCollection.findOne({ _id: this.client.ObjectID(fileId) });
+  }
+
+  async insertFile(file) {
+    const filesCollection = this.client.db().collection('files');
+    const result = await filesCollection.insertOne(file);
+    return result.ops[0];
+  }
 }
 
 const dbClient = new DBClient();
