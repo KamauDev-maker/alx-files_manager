@@ -63,6 +63,35 @@ class DBClient {
     const result = await filesCollection.insertOne(file);
     return result.ops[0];
   }
+
+  async getFileByIdAndUserId(fileId, userId) {
+    const filesCollection = this.client.db().collection('files');
+    return filesCollection.findOne({ _id: this.client.ObjectID(fileId), userId });
+  }
+
+  async getFilesByUserIdAndParentId(userId, parentId, page, pageSize) {
+    const filesCollection = this.client.db().collection('files');
+
+    const skip = page * pageSize;
+
+    const pipeline = [
+      { $match: { userId, parentId } },
+      { $skip: skip },
+      { $limit: pageSize },
+    ];
+
+    return filesCollection.aggregate(pipeline).toArray();
+  }
+
+  async updateFileIsPublic(fileId, isPublic) {
+    const filesCollection = this.client.db().collection('files');
+    const result = await filesCollection.findOneAndUpdate(
+      { _id: this.client.ObjectID(fileId) },
+      { $set: { isPublic } },
+      { returnDocument: 'after' },
+    );
+    return result.value;
+  }
 }
 
 const dbClient = new DBClient();
